@@ -341,7 +341,8 @@ exports.npmls = (function npmls(){
 
 	var tillList = when.defer(),
 		execPath = process.execPath, 
-		execArgv = [path.join(require.resolve('npm'), '../../bin/npm-cli.js'), 'ls', '--json', '--depth=10'];
+		execArgv = [path.join(require.resolve('npm'), '../../bin/npm-cli.js'), 'ls', '--json', '--depth=10'],
+		execFile = require('child_process').execFile;
 
 	execFile(execPath, execArgv, {
 			'cwd': process.cwd(),
