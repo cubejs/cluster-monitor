@@ -35,7 +35,7 @@ var debugMiddleware = exports.debugMiddleware = function(req, res, next){
 
 	if(req.url === '/deps'){
 
-		require('./utils').npmls
+		exports.npmls
 			.then(function(deps){
 				res.type('json').send(deps);
 			})
@@ -336,3 +336,26 @@ exports.monCreateServer = function createServer(app){
 
 	return server;
 };
+
+exports.npmls = (function npmls(){
+
+	var tillList = when.defer(),
+		execPath = process.execPath, 
+		execArgv = [path.join(require.resolve('npm'), '../../bin/npm-cli.js'), 'ls', '--json', '--depth=10'];
+
+	execFile(execPath, execArgv, {
+			'cwd': process.cwd(),
+			'encoding': 'utf-8'
+		}, 
+		function(err, stdout){
+
+			if(err){
+				tillList.reject(err);
+			}
+			else{
+				tillList.resolve(stdout);
+			}
+		});
+
+	return tillList.promise;
+})();
